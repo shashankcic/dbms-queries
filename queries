@@ -1,0 +1,128 @@
+CREATE TABLE Department(Dno INT NOT NULL PRIMARY KEY,Dname VARCHAR(50),Location VARCHAR(50) DEFAULT 'New Delhi');
+
+CREATE TABLE Employee(Eno CHAR(3) NOT NULL PRIMARY KEY,Ename VARCHAR(50) NOT NULL,Job_Type VARCHAR(50) NOT NULL,Manager CHAR(3),Hire_Date DATE NOT NULL,Dno INT,Commission Decimal(10,2),Salary Decimal (7,2) NOT NULL, FOREIGN KEY (Dno) REFERENCES Department(Dno),FOREIGN KEY (Manager) REFERENCES Employee(Eno));
+
+
+INSERT INTO Department VALUES (10,"Accounting","New York"),(20,"Research","Dallas"),(30,"Sales","Chicago"),(40,"Operation","Boston"),(50,"Marketing","New Delhi");
+
+INSERT INTO Employee VALUES (783,"King","President",NULL,"1981-11-17",10,0.00,2950.00);
+
+INSERT INTO Employee VALUES (756,"Jones","Manager",783,"1981-04-02",20,0.00,2300.00);
+
+INSERT INTO Employee VALUES (769,"Blake","Manager",783,"1981-05-01",30,0.00,2870.00);
+
+INSERT INTO Employee VALUES ("752","Ward","Sales_man","769","1981-02-22",30,500.00,1300.00),("749","Allan","Sales_man","769","1981-02-20",30,300.00,2000.00);
+
+INSERT INTO Employee VALUES ("792","Ford","Analyst","756","1981-12-03",20,0.00,2600.00),("790","James","Clerk","769","1981-12-03",30,0.00,950.00),("784","Turner","Sales_man","769","1981-09-08",30,0.00,1450.00),("788","Scott","Analyst","756","1982-12-09",20,0.00,2850.00),("778","Clark","Manager","783","1981-06-09",10,0.00,2900.00);
+
+INSERT INTO Employee VALUES ("736","Smith","Clerk","790","1980-12-17",20,0.00,1000.00),("793","Miller","Clerk","788","1982-01-23",40,0.00,1300.00),("787","Adams","Clerk","778","1983-01-12",20,0.00,1150.00);
+
+INSERT INTO Employee VALUES ("765","Martin","Sales_man","790","1981-04-22",30,1400.00,1250.00);
+
+
+1. SELECT Eno, Ename, Job_Type,Hire_Date FROM Employee;
+
+2. SELECT DISTINCT Job_Type FROM Employee;
+
+3. SELECT CONCAT(Ename, ',' , Job_type) AS Name_Job FROM Employee;
+
+4. SELECT CONCAT(Eno, ',' ,Ename, ',' ,Job_type, ',' ,Manager, ',' ,Hire_Date, ',' ,Dno, ',' ,Commission, ',' ,Salary) AS THE_OUTPUT FROM Employee;
+
+5. SELECT Ename, Salary FROM Employee WHERE (Salary + Commission) >2850;
+
+6. SELECT Ename, Dno FROM Employee WHERE Eno="790";
+
+7. SELECT Ename, Salary FROM Employee WHERE Salary NOT BETWEEN 1500 AND 2850;
+
+8. SELECT Ename, Job_Type, Hire_Date FROM Employee WHERE Hire_Date BETWEEN "1981-02-20" AND "1981-05-01" ORDER BY Hire_Date ASC;
+
+9. SELECT Ename, Dno FROM Employee WHERE Dno=10 OR Dno=30 ORDER BY Ename ASC;
+
+10. SELECT Ename, Salary FROM Employee WHERE (Dno=10 OR Dno=30) AND (Salary + Commission)>1500;
+
+11. SELECT Ename,Hire_Date FROM Employee WHERE YEAR(Hire_Date) = 1981;
+
+12. SELECT Ename,Job_type FROM Employee WHERE Manager IS NULL;
+
+13. SELECT Ename, Salary, Commission FROM Employee WHERE Commission > 0.00 ORDER BY Salary DESC,Commission DESC;
+
+14. SELECT Ename FROM Employee WHERE Ename LIKE "__a%" OR "__A%";
+
+15. SELECT Ename,Dno,Eno FROM Employee WHERE ((Ename LIKE "%r%r%" AND Ename NOT LIKE "%r%r%r%") OR (Ename LIKE "%R%r%" AND (Ename NOT LIKE "%R%r%r%" OR Ename NOT LIKE "%R%r%R%")) OR (Ename LIKE "%r%R%" AND (Ename NOT LIKE "%r%R%r%" OR Ename NOT LIKE "%r%R%R%")) OR (Ename LIKE "%R%R%" AND Ename NOT LIKE "%R%R%R%")) OR ((Ename LIKE "%a%a%" AND Ename NOT LIKE "%a%a%a%") OR (Ename LIKE "%A%a%" AND (Ename NOT LIKE "%A%a%a%" OR Ename NOT LIKE "%A%a%A%")) OR (Ename LIKE "%a%A%" AND (Ename NOT LIKE "%a%A%a%" OR Ename NOT LIKE "%a%A%A%")) OR (Ename LIKE "%A%A%" AND Ename NOT LIKE "%A%A%A%")) OR Dno =30 OR Eno = "778" OR Eno="788";
+
+16. SELECT Ename, Job_Type, Salary FROM Employee WHERE (Job_Type = "Clerk" OR Job_Type = "Analyst") AND NOT (Salary=1000.00 OR Salary=3000.00 OR Salary=5000.00);
+
+17. SELECT Ename, Salary, Commission FROM Employee WHERE Commission > (Salary * 1.05);
+
+18. SELECT CURDATE();
+
+19. SELECT Eno, Ename, Salary, ROUND(Salary + (Salary *15/100),0) "Salary_Inc" FROM Employee;
+
+20. SELECT Ename, Hire_Date, DATE_ADD(DATE_ADD(Hire_Date,INTERVAL 6 MONTH),INTERVAL (7 - WEEKDAY(DATE_ADD(Hire_Date,INTERVAL 6 MONTH))) DAY) AS Review_Date FROM Employee;
+
+21. SELECT Eno, Ename, Job_Type, Salary, Commission, (Salary +Commission) "Total_Salary" FROM Employee WHERE (Salary+ Commission) > (SELECT MAX(Salary) FROM Employee WHERE Job_Type = "Clerk");
+
+22. SELECT Ename, TIMESTAMPDIFF(MONTH, Hire_Date,CURDATE()) "MONTHS" FROM Employee;
+OR  SELECT Ename, Period_Diff(CONCAT(YEAR(CURDATE()),SUBSTRING(CURDATE(),6,2)),CONCAT(YEAR(Hire_Date),SUBSTRING(Hire_Date,6,2))) As "Months" FROM Employee;
+OR  SELECT Ename,12 *  (YEAR(curdate())-YEAR(Hire_date)) + (MONTH(CURDATE())-MONTH(Hire_date)) AS MONTHS FROM employee;
+
+23. SELECT CONCAT(Ename, " earns ",Salary, " monthly but wants ",3 * Salary) AS Dream_Salary FROM Employee;
+
+24. SELECT Ename, LPAD(Salary,15,"$") New_Sal FROM Employee;
+
+25. SELECT CONCAT(UPPER(SUBSTRING(Ename,1,1)),LOWER(SUBSTRING(Ename,2,49))) AS Emp_Name,LENGTH(Ename) AS Length FROM Employee WHERE Ename LIKE "J%" OR Ename LIKE "j%" OR Ename LIKE "A%" OR Ename LIKE "j%" OR Ename LIKE "M%" OR Ename LIKE "m%";
+
+26. SELECT Ename, Hire_Date, DAYNAME(Hire_Date) "Day" FROM Employee;
+
+27. SELECT Ename, CASE WHEN Commission =0 THEN "No Commission" ELSE Commission END "New_Commission" FROM Employee;
+
+28. SELECT e.Ename, d.Dname, e.Dno FROM Employee e, Department d WHERE e.Dno=d.Dno;
+
+29. SELECT DISTINCT Job_Type FROM Employee WHERE Dno=30;
+
+30. SELECT Ename, Dname, Location FROM Employee e, Department d WHERE Commission>0 AND e.Dno=d.Dno;
+
+31. SELECT Ename, Dname FROM Employee e, Department d WHERE e.Dno=d.Dno AND (Ename LIKE "%a%" OR Ename LIKE "%A%");
+
+32. SELECT Ename,Job_Type,e.Dno, Dname FROM Employee e,Department d WHERE d.Dno=e.Dno AND Location = "Dallas";
+
+33. SELECT e.Ename,e.Eno, m.Ename Manager_Name,m.Eno Manager_Eno FROM Employee AS e LEFT OUTER JOIN Employee AS m ON m.Eno=e.Manager; 
+For Null Managers Out :- SELECT e.Ename,e.Eno, m.Ename Manager_Name,m.Eno Manager_Eno FROM Employee AS e LEFT OUTER JOIN Employee AS m ON m.Eno=e.Manager WHERE e.Manager IS NOT NULL;
+
+34. SELECT e.Ename,e.Eno, m.Ename Manager_Name,m.Eno Manager_Eno FROM Employee AS e LEFT OUTER JOIN Employee AS m ON m.Eno=e.Manager;
+
+35. SELECT DISTINCT Eno, Ename, Salary, e1.Dno FROM Employee e1,Department d1 WHERE Salary > (SELECT Avg(Salary) FROM Employee) AND e1.Dno IN (SELECT e.Dno FROM Employee e,Department d WHERE e.Dno = d.Dno AND (Ename LIKE "%t%" OR Ename LIKE "%T%"));
+
+36. SELECT Ename, Dno, Salary FROM Employee WHERE (Salary, Dno) IN (SELECT Salary, Dno FROM Employee WHERE Commission <> 0.00);
+
+37. SELECT Ename, Hire_Date FROM Employee WHERE Hire_Date>(SELECT Hire_Date FROM Employee WHERE Ename = "Blake");
+
+38. SELECT e.Ename Emp_Name, e.Hire_Date Emp_Hire, m.Ename Man_Name, m.Hire_Date Man_Hire FROM Employee e, Employee m WHERE e.Hire_Date<m.Hire_Date AND e.Manager=m.Eno;
+
+39. SELECT Ename,REPEAT("*",(Salary/100)) Salary_in_Star FROM Employee;
+
+40. SELECT MAX(Salary) Highest, MIN(Salary) Lowest, SUM(Salary) Sum, AVG(Salary) Average FROM Employee;
+
+41. SELECT Job_Type,MAX(Salary) Highest, MIN(Salary) Lowest, SUM(Salary) Sum, AVG(Salary) Average FROM Employee GROUP BY Job_Type;
+
+42. SELECT Job_Type,COUNT(*) Count FROM Employee GROUP BY Job_Type;
+
+43. SELECT COUNT(DISTINCT Manager) No_of_Managers FROM Employee;
+
+44. SELECT (MAX(Salary)-MIN(Salary)) Diff FROM Employee;
+
+45. SELECT Manager,Salary FROM (SELECT Manager,MIN(Salary) Salary FROM Employee GROUP BY Manager) LIST WHERE Salary >=1000 AND MANAGER IS NOT NULL;
+
+46. SELECT COUNT(*) No_of_Employee,AVG(Salary) Dname, Location FROM Employee e, Department d WHERE e.Dno=d.Dno GROUP BY e.Dno;
+
+47. SELECT Ename,Hire_Date FROM Employee WHERE Dno IN (SELECT Dno FROM Employee WHERE Ename = "Blake") AND Ename <> "Blake";
+
+48. SELECT Eno, Ename FROM Employee WHERE Salary > (SELECT AVG(Salary) FROM Employee);
+
+49. SELECT DISTINCT Eno, Ename, e1.Dno FROM Employee e1, Department d1 WHERE Salary>(SELECT AVG(Salary) FROM Employee) AND e1.Dno IN (SELECT e.Dno FROM Employee e, Department d WHERE e.Dno=d.Dno AND (Ename LIKE "%t%" OR Ename LIKE "%T%"));
+
+50. SELECT Ename, Salary FROM Employee WHERE Manager IN (SELECT Eno FROM Employee WHERE Ename="King");
+
+51. SELECT Dno, Ename, Job_Type FROM Employee WHERE Dno IN (SELECT Dno FROM Department WHERE Dname = "Sales");
+
+52. SELECT Ename FROM Employee,(SELECT Manager, AVG(Salary) Average_Salary FROM Employee GROUP BY Manager) Temp WHERE Salary> Average_Salary AND Eno=Temp.Manager;

@@ -126,3 +126,5 @@ For Null Managers Out :- SELECT e.Ename,e.Eno, m.Ename Manager_Name,m.Eno Manage
 51. SELECT Dno, Ename, Job_Type FROM Employee WHERE Dno IN (SELECT Dno FROM Department WHERE Dname = "Sales");
 
 52. SELECT Ename FROM Employee,(SELECT Manager, AVG(Salary) Average_Salary FROM Employee GROUP BY Manager) Temp WHERE Salary> Average_Salary AND Eno=Temp.Manager;
+
+-- The queries given after OR are alternatives, please suggest more alternatives to all queries.
